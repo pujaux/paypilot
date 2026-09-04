@@ -227,7 +227,7 @@ npm run dev
 ## Demo
 
 ### Live Demo URL
-Visit: **[paypilot-n7uohe8ub.vercel.app](https://paypilot-n7uohe8ub.vercel.app)**
+Visit: **[paypilot-n7uohe8ub.vercel.app](https://paypilot-n7uohe8ub-puja-rani-bhuyan-s-projects.vercel.app/)**
 
 ### Test the Demo
 
