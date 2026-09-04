@@ -1,4 +1,4 @@
-# PayPilot 🚀
+# PayPilot 
 
 **AI-powered payment failure recovery agent** — automatically classifies payment failures and drafts intelligent recovery messages in real-time.
 
