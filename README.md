@@ -392,11 +392,7 @@ MIT © Puja Rani Bhuyan
 
 ---
 
-## Questions? Issues?
 
-- 💬 Open an issue on GitHub
-- 🐦 [@YourTwitter](https://twitter.com)
-- 📧 your.email@example.com
 
 ---
 
