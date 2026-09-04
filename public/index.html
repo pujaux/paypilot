@@ -126,33 +126,67 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  const triggerTest = async (type) => {
+  try {
+    const res = await fetch(`/api/test-failure?type=${type}`, { method: 'POST' });
+    if (res.ok) {
+      // Reload data immediately after trigger
+      await new Promise(r => setTimeout(r, 500));
+      load();
+    } else {
+      alert('Test trigger failed. Check console.');
+    }
+  } catch (err) {
+    console.error('Trigger error:', err);
+  }
+};
+
+const buttonStyle = {
+  padding: '10px 16px',
+  border: 'none',
+  borderRadius: '8px',
+  background: 'var(--accent)',
+  color: '#fff',
+  fontSize: '13px',
+  fontWeight: 500,
+  cursor: 'pointer',
+  transition: 'opacity 0.2s',
+  boxShadow: '0 0 12px rgba(79, 139, 255, 0.3)'
+};
+
   const totalFailed = rows.length;
   const totalCaptured = payments.filter(p => p.status === "captured").length;
   const classified = rows.filter(r => r.failure.category).length;
   const drafted = rows.filter(r => r.recovery).length;
 
+  
+
   return (
     <div className="wrap">
       <header>
-        <div>
-          <div className="mark">
-            <span className="dot"></span>
-            <h1 className="display">PayPilot</h1>
-          </div>
-          <p>Payment failure recovery — live console</p>
-        </div>
-        <div className="status">
-          Connected to Razorpay test mode<br/>
-          <span>● live</span> · refreshes every 15s
-        </div>
-      </header>
+  <div>
+    <div className="mark">
+      <span className="dot"></span>
+      <h1 className="display">PayPilot</h1>
+    </div>
+    <p>Payment failure recovery — live console</p>
+  </div>
+  <div className="status">
+    Connected to Razorpay test mode<br/>
+    <span>● live</span> · refreshes every 15s
+  </div>
+</header>
 
-      <div className="stats">
-        <div className="stat"><div className="num display">{totalFailed}</div><div className="label">Failures logged</div></div>
-        <div className="stat"><div className="num display">{totalCaptured}</div><div className="label">Payments captured</div></div>
-        <div className="stat"><div className="num display">{classified}</div><div className="label">Classified by AI</div></div>
-        <div className="stat"><div className="num display">{drafted}</div><div className="label">Recovery messages drafted</div></div>
-      </div>
+<div style={{ marginBottom: '48px', padding: '24px', border: '1px solid var(--panel-border)', borderRadius: '14px', background: 'rgba(255,255,255,0.015)' }}>
+  <p style={{ margin: '0 0 16px 0', color: 'var(--muted)', fontSize: '13px', fontWeight: 500 }}>Demo: Trigger test failures</p>
+  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+    <button onClick={() => triggerTest('insufficient_funds')} style={buttonStyle}>₹ Insufficient Funds</button>
+    <button onClick={() => triggerTest('card_expired')} style={buttonStyle}>🗓️ Card Expired</button>
+    <button onClick={() => triggerTest('international_card_blocked')} style={buttonStyle}>🌍 International Block</button>
+    <button onClick={() => triggerTest('network_error')} style={buttonStyle}>⚡ Network Error</button>
+    <button onClick={() => triggerTest('card_declined')} style={buttonStyle}>❌ Card Declined</button>
+  </div>
+</div>
 
       <section>
         <h2>Recent failures</h2>
