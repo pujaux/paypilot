@@ -127,7 +127,10 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
+  const [triggering, setTriggering] = useState(null);
+
   const triggerTest = async (type) => {
+    setTriggering(type);
     try {
       const res = await fetch(`/api/test-failure?type=${type}`, { method: 'POST' });
       if (res.ok) {
@@ -138,21 +141,25 @@ function App() {
       }
     } catch (err) {
       console.error('Trigger error:', err);
+    } finally {
+      setTriggering(null);
     }
   };
 
-  const buttonStyle = {
+  const getButtonStyle = (type) => ({
     padding: '10px 16px',
     border: 'none',
     borderRadius: '8px',
-    background: 'var(--accent)',
+    background: triggering === type ? 'rgba(79, 139, 255, 0.6)' : 'var(--accent)',
     color: '#fff',
     fontSize: '13px',
     fontWeight: 500,
-    cursor: 'pointer',
-    transition: 'opacity 0.2s',
-    boxShadow: '0 0 12px rgba(79, 139, 255, 0.3)'
-  };
+    cursor: triggering === type ? 'not-allowed' : 'pointer',
+    transition: 'all 0.15s ease',
+    boxShadow: triggering === type ? '0 0 20px rgba(79, 139, 255, 0.6) inset' : '0 0 12px rgba(79, 139, 255, 0.3)',
+    transform: triggering === type ? 'scale(0.98)' : 'scale(1)',
+    opacity: triggering === type ? 0.7 : 1
+  });
 
   const totalFailed = rows.length;
   const totalCaptured = payments.filter(p => p.status === "captured").length;
@@ -178,11 +185,21 @@ function App() {
       <div style={{ marginBottom: '48px', padding: '24px', border: '1px solid var(--panel-border)', borderRadius: '14px', background: 'rgba(255,255,255,0.015)' }}>
         <p style={{ margin: '0 0 16px 0', color: 'var(--muted)', fontSize: '13px', fontWeight: 500 }}>🎬 Demo: Trigger test failures</p>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
-          <button onClick={() => triggerTest('insufficient_funds')} style={buttonStyle}>₹ Insufficient Funds</button>
-          <button onClick={() => triggerTest('card_expired')} style={buttonStyle}>🗓️ Card Expired</button>
-          <button onClick={() => triggerTest('international_card_blocked')} style={buttonStyle}>🌍 International Block</button>
-          <button onClick={() => triggerTest('network_error')} style={buttonStyle}>⚡ Network Error</button>
-          <button onClick={() => triggerTest('card_declined')} style={buttonStyle}>❌ Card Declined</button>
+          <button onClick={() => triggerTest('insufficient_funds')} disabled={triggering} style={getButtonStyle('insufficient_funds')}>
+            {triggering === 'insufficient_funds' ? '⏳ Loading...' : '₹ Insufficient Funds'}
+          </button>
+          <button onClick={() => triggerTest('card_expired')} disabled={triggering} style={getButtonStyle('card_expired')}>
+            {triggering === 'card_expired' ? '⏳ Loading...' : '🗓️ Card Expired'}
+          </button>
+          <button onClick={() => triggerTest('international_card_blocked')} disabled={triggering} style={getButtonStyle('international_card_blocked')}>
+            {triggering === 'international_card_blocked' ? '⏳ Loading...' : '🌍 International Block'}
+          </button>
+          <button onClick={() => triggerTest('network_error')} disabled={triggering} style={getButtonStyle('network_error')}>
+            {triggering === 'network_error' ? '⏳ Loading...' : '⚡ Network Error'}
+          </button>
+          <button onClick={() => triggerTest('card_declined')} disabled={triggering} style={getButtonStyle('card_declined')}>
+            {triggering === 'card_declined' ? '⏳ Loading...' : '❌ Card Declined'}
+          </button>
         </div>
       </div>
 
